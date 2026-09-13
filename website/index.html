@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="BugDrop captures a short bug reproduction as a local, reviewable timeline for your coding agent.">
+    <title>BugDrop — Show the bug. Keep the context.</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main>
+      <header class="nav wrap">
+        <a class="brand" href="#top" aria-label="BugDrop home"><span class="mark" aria-hidden="true"></span><strong>BugDrop</strong></a>
+        <nav aria-label="Main navigation"><a href="#how">How it works</a><a href="#capture">Capture</a><a href="https://github.com/aim0xyz/bugdrop" target="_blank" rel="noreferrer">GitHub ↗</a></nav>
+        <span class="local-pill"><i></i> local-first</span>
+      </header>
+
+      <section class="hero wrap" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow">OPEN SOURCE <span>FOR PEOPLE WHO DEBUG</span></p>
+          <h1>Stop describing bugs.<br><em>Drop the evidence.</em></h1>
+          <p class="lede">BugDrop records a short reproduction and turns clicks, console errors, failed requests, stack traces, screenshots, and app video into one clean timeline.</p>
+          <div class="actions"><a class="button primary" href="https://github.com/aim0xyz/bugdrop/releases/tag/v0.2.3" target="_blank" rel="noreferrer">Get BugDrop ↗</a><a class="button secondary" href="https://github.com/aim0xyz/bugdrop" target="_blank" rel="noreferrer">View source</a></div>
+          <p class="version">✓ v0.2.3 · Chrome, macOS, Windows &amp; Linux</p>
+        </div>
+        <div class="capture-shell" id="capture" aria-label="Example BugDrop capture">
+          <div class="titlebar"><span class="dots">● ● ●</span><span>bugdrop / capture</span><b>● recording</b></div>
+          <div class="address">⌁ &nbsp; localhost:3000/items/new</div>
+          <div class="capture-content">
+            <div class="fake-app"><p></p><p></p><p></p><div></div><button>Save item</button></div>
+            <div class="timeline"><div class="timeline-head">CAPTURED TIMELINE <span>4 events</span></div><p><time>+0ms</time> <b>CLICK</b> Save item</p><p><time>+120ms</time> <b>POST</b> /api/item <em>500</em></p><p><time>+121ms</time> <b>ERROR</b> Save failed</p><p><time>+260ms</time> <b>SCREENSHOT</b> selected app</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="steps wrap" id="how">
+        <div class="section-label">01 — HOW IT WORKS</div>
+        <h2>One focused repro.<br><em>Everything it needs.</em></h2>
+        <div class="step-grid">
+          <article><span>01</span><h3>Start a capture</h3><p>Record a browser tab, selected desktop app, iOS Simulator, or Android Emulator.</p></article>
+          <article><span>02</span><h3>Reproduce the issue</h3><p>BugDrop follows the evidence: steps, errors, logs, requests, screenshots, and optional app video.</p></article>
+          <article><span>03</span><h3>Review and hand off</h3><p>Remove anything private, add expected behavior, then export Markdown or JSON for your agent or teammate.</p></article>
+        </div>
+      </section>
+
+      <section class="evidence wrap">
+        <div><div class="section-label">02 — USEFUL EVIDENCE</div><h2>One timeline.<br><em>Zero archaeology.</em></h2><p>Your agent sees what happened, in what order, and how quickly — without asking you to reconstruct the failure from five different tabs.</p><ul><li>✓ Millisecond-relative timestamps</li><li>✓ Failed fetch and XHR requests</li><li>✓ Redacted, bounded stack traces</li><li>✓ Selected-app screenshots and video</li></ul></div>
+        <pre><small>bugdrop-report.md                 REVIEWED ✓</small><strong># Checkout fails after save</strong><code>[+0ms]   CLICK: button[data-testid="save"]
+[+120ms] POST /api/item → <b>500</b>
+[+121ms] ERROR: Save failed
+
+Error: Save failed
+  at saveItem (app.js:42:11)
+  at async submit (form.js:18:3)</code><footer>✓ Reviewed locally before export</footer></pre>
+      </section>
+
+      <section class="platforms wrap">
+        <div class="section-label">03 — WHERE IT WORKS</div><h2>Web or mobile.<br>Same clean handoff.</h2>
+        <div class="platform-grid"><article><span>CHROME</span><h3>See the action and the failure.</h3><p>Clicks, console output, failed requests, routes, stack traces, and optional screenshots.</p><b>● Available now</b></article><article><span>DESKTOP &amp; IOS</span><h3>Capture only the selected app.</h3><p>App-scoped logs, annotated steps, screenshots, and optional screen video.</p><b>● Available now</b></article><article><span>ANDROID</span><h3>Hand off more than “it crashed.”</h3><p>PID-scoped logs, annotated steps, screenshots, and optional screen video.</p><b>● Available now</b></article></div>
+      </section>
+
+      <section class="privacy"><div class="wrap"><div class="shield">✓</div><div><div class="section-label">LOCAL BY DEFAULT</div><h2>Your bug stays on your machine.</h2></div><p>Nothing gets uploaded by BugDrop. Inspect the capture locally, remove irrelevant or private evidence, then choose what to export.</p></div></section>
+      <section class="final"><div class="wrap"><p class="eyebrow">THE NEXT BUG TAKES 30 SECONDS</p><h2>Show the bug.<br><em>Keep the context.</em></h2><div class="actions"><a class="button dark" href="https://github.com/aim0xyz/bugdrop/releases/tag/v0.2.3" target="_blank" rel="noreferrer">Download v0.2.3 ↗</a><a class="button light" href="https://github.com/aim0xyz/bugdrop" target="_blank" rel="noreferrer">Star on GitHub</a></div></div></section>
+    </main>
+    <footer class="footer wrap"><a class="brand" href="#top"><span class="mark" aria-hidden="true"></span><strong>BugDrop</strong></a><p>Open source · MIT License · Built by <a href="https://aimoxyz.xyz">aimoxyz</a></p><a href="https://github.com/aim0xyz/bugdrop">GitHub ↗</a></footer>
+  </body>
+</html>
