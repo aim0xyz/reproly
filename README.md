@@ -6,11 +6,30 @@ BugDrop captures debugging evidence from web apps, iOS simulators, and Android e
 
 No account. No cloud service. No AI API key. MIT licensed.
 
+## Embedded iOS SDK prototype
+
+`sdk/ios` contains an initial Swift Package for embedding BugDrop directly in an iOS app. It records explicitly added breadcrumbs and failed requests made through its `URLSession`, persists a bounded local timeline across unexpected termination, and provides a SwiftUI review form. It never uploads by itself and excludes request/response bodies, headers, cookies, URL queries, and input values. See [`sdk/ios/README.md`](sdk/ios/README.md) for setup and the crash-reporting boundary.
+
 ![BugDrop review screen with a real capture from the local demo](docs/preview.png)
 
-> **Early prototype · v0.2.2.** Load it unpacked in Chrome. There is no Chrome Web Store listing yet. BugDrop captures debugging evidence; it does not automatically fix bugs or generate regression tests.
+> **Early prototype · v0.2.3.** Load it unpacked in Chrome. There is no Chrome Web Store listing yet. BugDrop captures debugging evidence; it does not automatically fix bugs or generate regression tests.
 
-## Desktop recorder — start here for mobile apps
+## Desktop app — start here for mobile apps
+
+BugDrop is available as a regular desktop app for macOS, Windows, and Linux. Open it from your Applications folder or Start menu; no terminal is needed. It can record a running desktop app on the local computer as well as iOS simulators and Android emulators. The app still runs entirely on your computer and saves captures under `~/BugDrop Captures/`.
+
+Build an installer on the target operating system:
+
+```sh
+npm install
+npm run desktop:build
+```
+
+The installers are written to `dist/desktop/`. Tagged releases and manually started GitHub Actions runs build a universal macOS app plus x64 and ARM64 downloads for Windows and Linux. Builds without configured platform signing may trigger an operating-system confirmation the first time they are opened. See [`docs/DISTRIBUTION.md`](docs/DISTRIBUTION.md) for supported systems, release assets, and signing setup.
+
+For development, use `npm run desktop` to open the app window. The old browser-based controller remains available as `npm run desktop:web`.
+
+### Browser-based development mode
 
 With Node.js 22 or newer:
 
@@ -20,16 +39,16 @@ cd bugdrop
 ```
 
 ```sh
-npm run desktop
+npm run desktop:web
 ```
 
 No `npm install` is needed for the runtime.
 
-Open `http://127.0.0.1:4318`. Choose a running simulator/emulator and an installed app, open that app on the device, then click **Start recording**. Use **Take screenshot**, add steps, and **Stop & review**. No process names or command-line recording flags are needed.
+Open `http://127.0.0.1:4318`. Choose the local computer and a running desktop app, or choose a running simulator/emulator and an installed app. Then click **Start recording**, use **Take screenshot**, add steps, and choose **Stop & review**. No process names or command-line recording flags are needed.
 
 Captures are saved under `~/BugDrop Captures/`. The controller listens only on loopback and checks the Host, Origin, and a per-session token for API requests. Keep it running while using the review link. Closing the browser tab does not stop an active capture; use Stop, quit the controller, or wait for the three-minute limit.
 
-This is a browser-based local desktop controller, not a packaged native desktop application. iOS needs macOS and Xcode; Android needs `adb`. Physical devices are excluded in this version. Android's app list includes user-installed packages, not system apps.
+The packaged app and browser-based development mode share the same controller. In the packaged app, desktop screenshots and optional video capture only a visible window belonging to the selected program, even when BugDrop is in front. If that window is unavailable, capture stops with an error rather than recording the full screen. The browser-based development mode and CLI do not support desktop video; desktop screenshots there use the operating system's screen capture. Desktop logs come from the selected process: Unified Logging on macOS, journal entries on Linux, and process status on Windows. An already-running process's stdout/stderr cannot be attached retroactively. iOS recording needs macOS and Xcode; Android recording needs `adb`. Physical devices are excluded in this version. Android's app list includes user-installed packages, not system apps.
 
 ## iOS Simulator and Android Emulator — CLI
 
@@ -37,6 +56,7 @@ BugDrop also includes a local CLI recorder for native apps. Node.js 22+ is requi
 
 ```sh
 node bin/bugdrop.cjs devices
+node bin/bugdrop.cjs record --platform desktop --pid 1234 --process MyApp
 node bin/bugdrop.cjs record --platform ios --process Runner --video
 node bin/bugdrop.cjs record --platform android --package com.example.app --video
 ```
@@ -122,7 +142,7 @@ npm run check
 npm run package
 ```
 
-Runtime and unit tests have no third-party dependencies. Packaging uses `zip` (macOS/Linux) and writes `dist/bugdrop-0.2.2.zip`. See [CONTRIBUTING.md](CONTRIBUTING.md) for the real-browser test and architecture.
+Runtime and unit tests have no third-party dependencies. Packaging uses `zip` (macOS/Linux) and writes `dist/bugdrop-0.2.3.zip`. See [CONTRIBUTING.md](CONTRIBUTING.md) for the real-browser test and architecture.
 
 ## Next, driven by actual bug reports
 

@@ -1,0 +1,110 @@
+name: Desktop builds
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            command: desktop:build:mac
+            arch: --universal
+            artifact: macOS-Universal
+          - os: windows-latest
+            command: desktop:build:windows
+            arch: --x64
+            artifact: Windows-x64
+          - os: windows-latest
+            command: desktop:build:windows
+            arch: --arm64
+            artifact: Windows-arm64
+          - os: ubuntu-latest
+            command: desktop:build:linux
+            arch: --x64
+            artifact: Linux-x64
+          - os: ubuntu-latest
+            command: desktop:build:linux
+            arch: --arm64
+            artifact: Linux-arm64
+    runs-on: ${{ matrix.os }}
+    env:
+      CSC_LINK: ${{ matrix.os == 'macos-latest' && secrets.MAC_CSC_LINK || matrix.os == 'windows-latest' && secrets.WINDOWS_CSC_LINK || '' }}
+      CSC_KEY_PASSWORD: ${{ matrix.os == 'macos-latest' && secrets.MAC_CSC_KEY_PASSWORD || matrix.os == 'windows-latest' && secrets.WINDOWS_CSC_KEY_PASSWORD || '' }}
+      APPLE_ID: ${{ matrix.os == 'macos-latest' && secrets.APPLE_ID || '' }}
+      APPLE_APP_SPECIFIC_PASSWORD: ${{ matrix.os == 'macos-latest' && secrets.APPLE_APP_SPECIFIC_PASSWORD || '' }}
+      APPLE_TEAM_ID: ${{ matrix.os == 'macos-latest' && secrets.APPLE_TEAM_ID || '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run ${{ matrix.command }} -- ${{ matrix.arch }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BugDrop-${{ matrix.artifact }}
+          path: dist/desktop/*
+          if-no-files-found: error
+
+  extension:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run package
+      - uses: actions/upload-artifact@v4
+        with:
+          name: BugDrop-Extension
+          path: dist/bugdrop-*.zip
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build, extension]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+      - name: Create release and upload downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir normalized-assets
+          mac_asset=$(find release-assets/BugDrop-macOS-Universal -type f -name '*.dmg' -print -quit)
+          windows_x64=$(find release-assets/BugDrop-Windows-x64 -type f -iname '*setup*.exe' -print -quit)
+          windows_arm64=$(find release-assets/BugDrop-Windows-arm64 -type f -iname '*setup*.exe' -print -quit)
+          linux_x64=$(find release-assets/BugDrop-Linux-x64 -type f -name '*.AppImage' -print -quit)
+          linux_arm64=$(find release-assets/BugDrop-Linux-arm64 -type f -name '*.AppImage' -print -quit)
+          deb_x64=$(find release-assets/BugDrop-Linux-x64 -type f -name '*.deb' -print -quit)
+          deb_arm64=$(find release-assets/BugDrop-Linux-arm64 -type f -name '*.deb' -print -quit)
+          extension_asset=$(find release-assets/BugDrop-Extension -type f -name 'bugdrop-*.zip' -print -quit)
+          test -n "$mac_asset" && test -n "$windows_x64" && test -n "$windows_arm64" && test -n "$linux_x64" && test -n "$linux_arm64" && test -n "$deb_x64" && test -n "$deb_arm64" && test -n "$extension_asset"
+          cp "$mac_asset" normalized-assets/BugDrop-macOS-Universal.dmg
+          cp "$windows_x64" normalized-assets/BugDrop-Windows-x64-Setup.exe
+          cp "$windows_arm64" normalized-assets/BugDrop-Windows-arm64-Setup.exe
+          cp "$linux_x64" normalized-assets/BugDrop-Linux-x86_64.AppImage
+          cp "$linux_arm64" normalized-assets/BugDrop-Linux-arm64.AppImage
+          cp "$deb_x64" normalized-assets/BugDrop-Linux-x86_64.deb
+          cp "$deb_arm64" normalized-assets/BugDrop-Linux-arm64.deb
+          cp "$extension_asset" normalized-assets/BugDrop-Chrome-Extension.zip
+          cd normalized-assets
+          shasum -a 256 * > SHA256SUMS.txt
+          cd ..
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 || gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --generate-notes
+          gh release upload "$GITHUB_REF_NAME" normalized-assets/* --clobber

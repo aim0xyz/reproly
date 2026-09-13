@@ -40,7 +40,7 @@ Useful first contributions include minimal reproductions of framework incompatib
 
 ## Desktop controller checks
 
-Run `npm run desktop`, then `node tests/desktop-http.cjs` for the local API access checks. The device integration test requires the synthetic demo app (`xyz.aimo.bugdrop.demo`, sources in `tests/fixtures/native/`) installed and running in the chosen device:
+Run `npm run desktop:web`, then `node tests/desktop-http.cjs` for the local API access checks. Use `npm run desktop` to exercise the packaged-app shell during development. The device integration test requires the synthetic demo app (`xyz.aimo.bugdrop.demo`, sources in `tests/fixtures/native/`) installed and running in the chosen device:
 
 ```sh
 TEST_PLATFORM=ios TEST_DEVICE=YOUR_SIMULATOR_UUID node tests/desktop-e2e.cjs

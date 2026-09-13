@@ -1,21 +1,77 @@
 {
   "name": "bugdrop",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "description": "Local-first bug reports for web apps, iOS simulators and Android emulators.",
   "license": "MIT",
+  "main": "desktop/main.cjs",
   "scripts": {
     "test": "node --test tests/*.test.cjs",
+    "test:ios-sdk": "cd sdk/ios && swift test",
     "demo": "node demo/server.cjs",
     "check": "node scripts/check.cjs",
     "package": "node scripts/package.cjs",
     "mobile": "node bin/bugdrop.cjs",
-    "desktop": "node desktop/server.cjs"
+    "desktop": "electron .",
+    "desktop:web": "node desktop/server.cjs",
+    "desktop:build": "electron-builder",
+    "desktop:build:mac": "electron-builder --mac",
+    "desktop:build:windows": "electron-builder --win",
+    "desktop:build:linux": "electron-builder --linux"
   },
   "engines": {
     "node": ">=22"
   },
   "bin": {
     "bugdrop": "bin/bugdrop.cjs"
+  },
+  "devDependencies": {
+    "electron": "^44.3.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "xyz.aimo.bugdrop",
+    "productName": "BugDrop",
+    "asar": true,
+    "asarUnpack": [
+      "bin/**",
+      "mobile/**"
+    ],
+    "files": [
+      "bin/**",
+      "desktop/**",
+      "extension/core.js",
+      "extension/ui.css",
+      "mobile/**",
+      "package.json",
+      "LICENSE"
+    ],
+    "directories": {
+      "output": "dist/desktop"
+    },
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "linux": {
+      "category": "Development",
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   }
 }
