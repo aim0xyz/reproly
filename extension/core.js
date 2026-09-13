@@ -57,7 +57,7 @@
   function portable(report) {
     const screenshots = Array.isArray(report.screenshots) ? report.screenshots : report.screenshot ? [{ id: 'legacy', data: report.screenshot, reason: 'Manual screenshot', ms: 0 }] : [];
     return {
-      schemaVersion: 2, generator: 'BugDrop 0.2.2', source: report.source || 'browser',
+      schemaVersion: 2, generator: 'BugDrop 0.2.3', source: report.source || 'browser',
       title: report.title || 'Untitled bug', url: report.url,
       startedAt: report.startedAt, endedAt: report.endedAt,
       stopReason: report.stopReason || '',
