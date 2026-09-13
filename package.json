@@ -4,6 +4,10 @@
   "private": true,
   "description": "Local-first bug reports for web apps, iOS simulators and Android emulators.",
   "license": "MIT",
+  "author": {
+    "name": "aim0xyz",
+    "email": "aimofoyou@gmail.com"
+  },
   "main": "desktop/main.cjs",
   "scripts": {
     "test": "node --test tests/*.test.cjs",

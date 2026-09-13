@@ -50,7 +50,13 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
-      - run: npm run ${{ matrix.command }} -- ${{ matrix.arch }}
+      - name: Build desktop package
+        shell: bash
+        run: |
+          for name in CSC_LINK CSC_KEY_PASSWORD APPLE_ID APPLE_APP_SPECIFIC_PASSWORD APPLE_TEAM_ID; do
+            if [ -z "${!name}" ]; then unset "$name"; fi
+          done
+          npm run ${{ matrix.command }} -- ${{ matrix.arch }} --publish never
       - uses: actions/upload-artifact@v4
         with:
           name: BugDrop-${{ matrix.artifact }}
