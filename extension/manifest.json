@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "BugDrop — Show the bug",
+  "name": "Reproly — Make bugs reproducible",
   "version": "0.2.3",
   "description": "Record a bug, review the evidence, and give your coding agent the context. Local, no account.",
   "minimum_chrome_version": "120",
@@ -11,7 +11,7 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "BugDrop"
+    "default_title": "Reproly"
   },
   "background": {
     "service_worker": "background.js"

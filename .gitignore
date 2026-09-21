@@ -1,4 +1,5 @@
 node_modules/
+cloud/cdk.out/
 dist/
 .build/
 .DS_Store

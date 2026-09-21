@@ -1,8 +1,8 @@
 {
-  "name": "bugdrop",
+  "name": "reproly",
   "version": "0.2.3",
   "private": true,
-  "description": "Local-first bug reports for web apps, iOS simulators and Android emulators.",
+  "description": "Local-first reproducible bug reports for web apps, iOS simulators and Android emulators.",
   "license": "MIT",
   "author": {
     "name": "aim0xyz",
@@ -27,15 +27,15 @@
     "node": ">=22"
   },
   "bin": {
-    "bugdrop": "bin/bugdrop.cjs"
+    "reproly": "bin/bugdrop.cjs"
   },
   "devDependencies": {
     "electron": "^44.3.0",
     "electron-builder": "^26.0.12"
   },
   "build": {
-    "appId": "xyz.aimo.bugdrop",
-    "productName": "BugDrop",
+    "appId": "xyz.aimo.reproly",
+    "productName": "Reproly",
     "asar": true,
     "asarUnpack": [
       "bin/**",
