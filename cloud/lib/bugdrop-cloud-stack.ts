@@ -78,6 +78,30 @@ export class BugDropCloudStack extends Stack {
       errorResponses: [{ httpStatus: 403, responsePagePath: '/index.html', responseHttpStatus: 200 }]
     });
     const dashboardUrl = `https://${dashboardDomain}`;
+
+    const landingDomain = 'reproly.aimoxyz.xyz';
+    const landingCertificate = acm.Certificate.fromCertificateArn(this, 'ReprolyLandingCertificate', 'arn:aws:acm:us-east-1:112859066975:certificate/71b1fe78-efc0-43ce-a1bc-a2816b5adefd');
+    const landingBucket = new s3.Bucket(this, 'Landing', {
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      enforceSSL: true,
+      removalPolicy: RemovalPolicy.RETAIN
+    });
+    const landing = new cloudfront.Distribution(this, 'LandingDistribution', {
+      domainNames: [landingDomain],
+      certificate: landingCertificate,
+      defaultBehavior: {
+        origin: origins.S3BucketOrigin.withOriginAccessControl(landingBucket),
+        viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS
+      },
+      defaultRootObject: 'index.html'
+    });
+    new s3deploy.BucketDeployment(this, 'DeployLanding', {
+      sources: [s3deploy.Source.asset(path.join(__dirname, '../../website'))],
+      destinationBucket: landingBucket,
+      distribution: landing,
+      distributionPaths: ['/*']
+    });
     // Cognito permits exactly one managed hosted-UI domain per user pool. Keep this
     // legacy hostname until the user pool is deliberately migrated in a maintenance
     // window; the customer-facing dashboard itself is fully on app.reproly.
@@ -153,6 +177,8 @@ export class BugDropCloudStack extends Stack {
     new cdk.CfnOutput(this, 'DashboardClientId', { value: webClient.userPoolClientId });
     new cdk.CfnOutput(this, 'EvidenceBucketName', { value: evidence.bucketName });
     new cdk.CfnOutput(this, 'DashboardUrl', { value: dashboardUrl });
+    new cdk.CfnOutput(this, 'LandingUrl', { value: `https://${landingDomain}` });
+    new cdk.CfnOutput(this, 'LandingDistributionDomainName', { value: landing.domainName });
     new cdk.CfnOutput(this, 'CognitoHostedUiUrl', { value: `${cognitoBaseUrl}/login` });
   }
 }
