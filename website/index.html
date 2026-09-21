@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Reproly captures a short bug reproduction as a local, reviewable timeline for your coding agent.">
+    <title>Reproly — Make every bug reproducible.</title>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="/cloud.css">
+  </head>
+  <body>
+    <main>
+      <header class="nav wrap">
+        <a class="brand" href="#top" aria-label="Reproly home"><span class="mark" aria-hidden="true"></span><strong>Reproly</strong></a>
+        <nav aria-label="Main navigation"><a href="#how">How it works</a><a href="#cloud">Cloud</a><a href="#pricing">Pricing</a><a href="https://github.com/aim0xyz/reproly" target="_blank" rel="noreferrer">GitHub ↗</a></nav>
+        <span class="local-pill"><i></i> local-first</span>
+      </header>
+
+      <section class="hero wrap" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow">OPEN SOURCE <span>FOR PEOPLE WHO DEBUG</span></p>
+          <h1>Stop describing bugs.<br><em>Drop the evidence.</em></h1>
+          <p class="lede">Reproly records a short reproduction and turns clicks, console errors, failed requests, stack traces, screenshots, and app video into one clean timeline.</p>
+          <div class="actions"><a class="button primary" href="https://github.com/aim0xyz/reproly/releases/tag/v0.2.3" target="_blank" rel="noreferrer">Get Reproly ↗</a><a class="button secondary" href="https://github.com/aim0xyz/reproly" target="_blank" rel="noreferrer">View source</a></div>
+          <p class="version">✓ v0.2.3 · Chrome, macOS, Windows &amp; Linux</p>
+        </div>
+        <div class="capture-shell" id="capture" aria-label="Example Reproly capture">
+          <div class="titlebar"><span class="dots">● ● ●</span><span>reproly / capture</span><b>● recording</b></div>
+          <div class="address">⌁ &nbsp; localhost:3000/items/new</div>
+          <div class="capture-content">
+            <div class="fake-app"><p></p><p></p><p></p><div></div><button>Save item</button></div>
+            <div class="timeline"><div class="timeline-head">CAPTURED TIMELINE <span>4 events</span></div><p><time>+0ms</time> <b>CLICK</b> Save item</p><p><time>+120ms</time> <b>POST</b> /api/item <em>500</em></p><p><time>+121ms</time> <b>ERROR</b> Save failed</p><p><time>+260ms</time> <b>SCREENSHOT</b> selected app</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="steps wrap" id="how">
+        <div class="section-label">01 — HOW IT WORKS</div>
+        <h2>One focused repro.<br><em>Everything it needs.</em></h2>
+        <div class="step-grid">
+          <article><span>01</span><h3>Start a capture</h3><p>Record a browser tab, selected desktop app, iOS Simulator, or Android Emulator.</p></article>
+          <article><span>02</span><h3>Reproduce the issue</h3><p>Reproly follows the evidence: steps, errors, logs, requests, screenshots, and optional app video.</p></article>
+          <article><span>03</span><h3>Review and hand off</h3><p>Remove anything private, add expected behavior, then export Markdown or JSON for your agent or teammate.</p></article>
+        </div>
+      </section>
+
+      <section class="evidence wrap">
+        <div><div class="section-label">02 — USEFUL EVIDENCE</div><h2>One timeline.<br><em>Zero archaeology.</em></h2><p>Your agent sees what happened, in what order, and how quickly — without asking you to reconstruct the failure from five different tabs.</p><ul><li>✓ Millisecond-relative timestamps</li><li>✓ Failed fetch and XHR requests</li><li>✓ Redacted, bounded stack traces</li><li>✓ Selected-app screenshots and video</li></ul></div>
+        <pre><small>reproly-report.md                 REVIEWED ✓</small><strong># Checkout fails after save</strong><code>[+0ms]   CLICK: button[data-testid="save"]
+[+120ms] POST /api/item → <b>500</b>
+[+121ms] ERROR: Save failed
+
+Error: Save failed
+  at saveItem (app.js:42:11)
+  at async submit (form.js:18:3)</code><footer>✓ Reviewed locally before export</footer></pre>
+      </section>
+
+      <section class="platforms wrap">
+        <div class="section-label">03 — WHERE IT WORKS</div><h2>Web or mobile.<br>Same clean handoff.</h2>
+        <div class="platform-grid"><article><span>CHROME</span><h3>See the action and the failure.</h3><p>Clicks, console output, failed requests, routes, stack traces, and optional screenshots.</p><b>● Available now</b></article><article><span>DESKTOP &amp; IOS</span><h3>Capture only the selected app.</h3><p>App-scoped logs, annotated steps, screenshots, and optional screen video.</p><b>● Available now</b></article><article><span>ANDROID</span><h3>Hand off more than “it crashed.”</h3><p>PID-scoped logs, annotated steps, screenshots, and optional screen video.</p><b>● Available now</b></article></div>
+      </section>
+
+      <section class="privacy"><div class="wrap"><div class="shield">✓</div><div><div class="section-label">LOCAL BY DEFAULT</div><h2>Your bug stays on your machine.</h2></div><p>Nothing gets uploaded by Reproly. Inspect the capture locally, remove irrelevant or private evidence, then choose what to export.</p></div></section>
+      <section class="cloud wrap" id="cloud">
+        <div class="cloud-intro"><div class="section-label">04 — REPROLY CLOUD</div><h2>Production context.<br><em>Only when it helps.</em></h2><p>Core stays local and open source. Reproly Cloud is the opt-in workspace for teams that need a secure path from a customer report to the context that fixes it.</p></div>
+        <div class="context-card"><div class="context-card-head"><span>DEBUG CONTEXT PACK</span><b>REVIEWED ✓</b></div><div class="context-grid"><p><i>01</i><strong>Report</strong><span>Expected and actual behavior, verified by the reporter.</span></p><p><i>02</i><strong>Evidence</strong><span>Relevant logs, errors, app version, device and session correlation.</span></p><p><i>03</i><strong>Controls</strong><span>Allowlisted fields, redaction, consent and workspace access rules.</span></p></div><footer>Never raw account access. Never silent collection.</footer></div>
+      </section>
+      <section class="cloud-principles"><div class="wrap principle-grid"><article><span>EXPLICIT</span><h3>The reporter chooses what leaves the device.</h3><p>A report is reviewed before it is shared. Teams can request context; they cannot quietly extract it.</p></article><article><span>MINIMIZED</span><h3>Debug fields are allowlisted, sensitive fields are redacted.</h3><p>Tokens, credentials, payments and unrestricted free text stay out by default. Retention is set per workspace.</p></article><article><span>USEFUL</span><h3>One incident, one searchable trail to a fix.</h3><p>Connect production context to the issue tracker, owner and release where the regression gets resolved.</p></article></div></section>
+      <section class="pricing wrap" id="pricing"><div class="pricing-head"><div><div class="section-label">05 — PRICING DIRECTION</div><h2>Pay for faster fixes,<br><em>not for reporting bugs.</em></h2></div><p>Core remains free. Cloud pricing scales with the operational value: secure production context, collaboration, retention and governance.</p></div><div class="pricing-grid"><article><span>CORE</span><h3>Free</h3><p class="price">€0 <small>forever</small></p><p>For focused local captures and portable handoffs.</p><ul><li>Local-first capture</li><li>Reviewed Markdown &amp; JSON export</li><li>Open-source client</li></ul><a class="text-link" href="https://github.com/aim0xyz/reproly" target="_blank" rel="noreferrer">Use Reproly Core ↗</a></article><article class="featured"><span>CLOUD PRO</span><h3>From €29</h3><p class="price">/ project <small>per month</small></p><p>For product teams turning incoming reports into resolved issues.</p><ul><li>Secure debug context packs</li><li>Search, triage and integrations</li><li>Configurable retention &amp; redaction</li></ul><a class="text-link" href="#pilot">Join the pilot ↓</a></article><article><span>BUSINESS</span><h3>Custom</h3><p class="price">Let’s talk</p><p>For organizations with governance and security requirements.</p><ul><li>Roles, audit trail and SSO</li><li>Data residency &amp; DPA</li><li>Priority support and SLA</li></ul><a class="text-link" href="#pilot">Discuss your setup ↓</a></article></div><p class="pilot" id="pilot"><strong>Early access:</strong> We’re defining Reproly Cloud with a small group of teams. The first release focuses on consented report delivery, safe context packs and issue-tracker handoff — not unrestricted customer-data access.</p></section>
+      <section class="final"><div class="wrap"><p class="eyebrow">THE NEXT BUG TAKES 30 SECONDS</p><h2>Show the bug.<br><em>Keep the context.</em></h2><div class="actions"><a class="button dark" href="https://github.com/aim0xyz/reproly/releases/tag/v0.2.3" target="_blank" rel="noreferrer">Download v0.2.3 ↗</a><a class="button light" href="https://github.com/aim0xyz/reproly" target="_blank" rel="noreferrer">Star on GitHub</a></div></div></section>
+    </main>
+    <footer class="footer wrap"><a class="brand" href="#top"><span class="mark" aria-hidden="true"></span><strong>Reproly</strong></a><p>Open source · MIT License · Built by <a href="https://aimoxyz.xyz">aimoxyz</a></p><a href="https://github.com/aim0xyz/reproly">GitHub ↗</a></footer>
+  </body>
+</html>

@@ -1,22 +1,22 @@
-# BugDrop
+# Reproly
 
 **Stop explaining bugs to AI. Show the evidence.**
 
-BugDrop captures debugging evidence from web apps, iOS simulators, and Android emulators. A Chrome extension and a local desktop controller turn a short reproduction into a report for your coding agent or teammate. Record the steps, review what was captured, describe what should have happened, and export Markdown or JSON.
+Reproly captures debugging evidence from web apps, iOS simulators, and Android emulators. A Chrome extension and a local desktop controller turn a short reproduction into a report for your coding agent or teammate. Record the steps, review what was captured, describe what should have happened, and export Markdown or JSON.
 
 No account. No cloud service. No AI API key. MIT licensed.
 
 ## Embedded iOS SDK prototype
 
-`sdk/ios` contains an initial Swift Package for embedding BugDrop directly in an iOS app. It records explicitly added breadcrumbs and failed requests made through its `URLSession`, persists a bounded local timeline across unexpected termination, and provides a SwiftUI review form. It never uploads by itself and excludes request/response bodies, headers, cookies, URL queries, and input values. See [`sdk/ios/README.md`](sdk/ios/README.md) for setup and the crash-reporting boundary.
+`sdk/ios` contains an initial Swift Package for embedding Reproly directly in an iOS app. It records explicitly added breadcrumbs and failed requests made through its `URLSession`, persists a bounded local timeline across unexpected termination, and provides a SwiftUI review form. It never uploads by itself and excludes request/response bodies, headers, cookies, URL queries, and input values. See [`sdk/ios/README.md`](sdk/ios/README.md) for setup and the crash-reporting boundary.
 
-![BugDrop review screen with a real capture from the local demo](docs/preview.png)
+![Reproly review screen with a real capture from the local demo](docs/preview.png)
 
-> **Early prototype · v0.2.3.** Load it unpacked in Chrome. There is no Chrome Web Store listing yet. BugDrop captures debugging evidence; it does not automatically fix bugs or generate regression tests.
+> **Early prototype · v0.2.3.** Load it unpacked in Chrome. There is no Chrome Web Store listing yet. Reproly captures debugging evidence; it does not automatically fix bugs or generate regression tests.
 
 ## Desktop app — start here for mobile apps
 
-BugDrop is available as a regular desktop app for macOS, Windows, and Linux. Open it from your Applications folder or Start menu; no terminal is needed. It can record a running desktop app on the local computer as well as iOS simulators and Android emulators. The app still runs entirely on your computer and saves captures under `~/BugDrop Captures/`.
+Reproly is available as a regular desktop app for macOS, Windows, and Linux. Open it from your Applications folder or Start menu; no terminal is needed. It can record a running desktop app on the local computer as well as iOS simulators and Android emulators. The app still runs entirely on your computer and saves captures locally.
 
 Build an installer on the target operating system:
 
@@ -34,8 +34,8 @@ For development, use `npm run desktop` to open the app window. The old browser-b
 With Node.js 22 or newer:
 
 ```sh
-git clone https://github.com/aim0xyz/bugdrop.git
-cd bugdrop
+git clone https://github.com/aim0xyz/reproly.git
+cd reproly
 ```
 
 ```sh
