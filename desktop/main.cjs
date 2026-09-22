@@ -1,5 +1,6 @@
 const {app, BrowserWindow, desktopCapturer, shell, session} = require('electron');
 const fs = require('node:fs');
+const path = require('node:path');
 const {createServer} = require('./server.cjs');
 const {selectWindowSource} = require('./window-source.cjs');
 
@@ -15,7 +16,8 @@ function createWindow() {
     minWidth: 900,
     minHeight: 650,
     backgroundColor: '#e9e4da',
-    title: 'BugDrop',
+    title: 'Patchmason',
+    icon: path.join(__dirname, '../build/icon.png'),
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,

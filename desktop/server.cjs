@@ -39,10 +39,11 @@ function createServer({root=path.join(os.homedir(),'BugDrop Captures'),discover=
   if(req.headers.origin&&req.headers.origin!==origin)return send(403,{error:'Foreign origin'});
   const url=new URL(req.url,origin);
   if(req.method==='GET'&&(url.pathname==='/'||url.pathname==='/reports')){
-   res.writeHead(200,{'Content-Type':'text/html','Cache-Control':'no-store','Content-Security-Policy':"default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; frame-ancestors 'none'"});return res.end(fs.readFileSync(path.join(__dirname,'index.html'),'utf8').replace('__TOKEN__',token));
+   const html=fs.readFileSync(path.join(__dirname,'index.html'),'utf8').replace('__TOKEN__',token).replace('BugDrop · App recorder','Patchmason · App recorder').replace('<span class="mark">b</span>bugdrop','<img src="/patchmason-mark.svg" alt="" width="32" height="32">patchmason');
+   res.writeHead(200,{'Content-Type':'text/html','Cache-Control':'no-store','Content-Security-Policy':"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; object-src 'none'; frame-ancestors 'none'"});return res.end(html);
   }
-  const staticFiles={'/app.js':path.join(__dirname,'app.js'),'/ui.css':path.join(base,'extension/ui.css'),'/desktop.css':path.join(__dirname,'desktop.css')};
-  if(req.method==='GET'&&staticFiles[url.pathname]){res.writeHead(200,{'Content-Type':url.pathname.endsWith('.js')?'text/javascript':'text/css'});return res.end(fs.readFileSync(staticFiles[url.pathname]));}
+  const staticFiles={'/app.js':path.join(__dirname,'app.js'),'/ui.css':path.join(base,'extension/ui.css'),'/desktop.css':path.join(__dirname,'desktop.css'),'/patchmason-mark.svg':path.join(__dirname,'patchmason-mark.svg')};
+  if(req.method==='GET'&&staticFiles[url.pathname]){res.writeHead(200,{'Content-Type':url.pathname.endsWith('.js')?'text/javascript':url.pathname.endsWith('.svg')?'image/svg+xml':'text/css'});return res.end(fs.readFileSync(staticFiles[url.pathname]));}
   if(req.method==='GET'&&url.pathname.startsWith('/capture/')&&url.searchParams.get('key')===token){
    listReports();
    const parts=url.pathname.slice('/capture/'.length).split('/');
@@ -96,7 +97,7 @@ function createServer({root=path.join(os.homedir(),'BugDrop Captures'),discover=
     try{
      const {devices}=await discover();const device=devices.find(d=>d.id===data.device);if(!device)throw new Error('Device disconnected.');
      const app=(await listApps(device)).find(a=>a.id===data.app);if(!app)throw new Error('Choose an installed app.');
-     if(device.platform==='desktop'&&data.video===true&&!desktopVideoAvailable)throw new Error('Desktop video requires the BugDrop desktop app.');
+     if(device.platform==='desktop'&&data.video===true&&!desktopVideoAvailable)throw new Error('Desktop video requires the Patchmason desktop app.');
      if(device.platform==='desktop'&&selectDesktopApp)await selectDesktopApp(app);
      fs.mkdirSync(root,{recursive:true,mode:0o700});const dir=path.join(root,'capture-'+Date.now()+'-'+randomBytes(3).toString('hex'));
      const selector=device.platform==='desktop'?['--pid',app.id,'--process',app.process]:device.platform==='ios'?['--process',app.process]:['--package',app.id];
@@ -137,5 +138,5 @@ function createServer({root=path.join(os.homedir(),'BugDrop Captures'),discover=
  });
  return {server,token,close:()=>{if(proc?.connected)proc.disconnect();server.close();}};
 }
-if(require.main===module){const app=createServer();app.server.listen(Number(process.env.PORT||4318),'127.0.0.1',()=>console.log('BugDrop desktop: http://127.0.0.1:'+app.server.address().port));for(const signal of ['SIGINT','SIGTERM'])process.once(signal,()=>app.close());}
+if(require.main===module){const app=createServer();app.server.listen(Number(process.env.PORT||4318),'127.0.0.1',()=>console.log('Patchmason desktop: http://127.0.0.1:'+app.server.address().port));for(const signal of ['SIGINT','SIGTERM'])process.once(signal,()=>app.close());}
 module.exports={createServer};

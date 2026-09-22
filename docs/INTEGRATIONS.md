@@ -1,6 +1,6 @@
 # Integration boundary
 
-BugDrop Core remains local-first and does not authenticate to third-party services. The open-source client produces a reviewed, portable report. A separately operated BugDrop Cloud service can accept that report after explicit user confirmation and deliver it to Jira or another provider.
+Patchmason Core remains local-first and does not authenticate to third-party services. The open-source client produces a reviewed, portable report. A separately operated Patchmason Cloud service can accept that report after explicit user confirmation and deliver it to Jira or another provider.
 
 ## Contract
 
@@ -8,10 +8,10 @@ BugDrop Core remains local-first and does not authenticate to third-party servic
 
 - `contractVersion`: the integration contract version.
 - `provider`: the selected delivery provider.
-- `report`: the allowlisted portable BugDrop report.
+- `report`: the allowlisted portable Patchmason report.
 - `providerPayload`: the provider-specific request body.
 
-The Jira formatter converts BugDrop sections into Atlassian Document Format (ADF). Captured strings remain ADF text nodes and are never interpreted as document structure. Screenshots remain in the portable report so a trusted backend can decode and upload only the images the reporter retained during review.
+The Jira formatter converts Patchmason sections into Atlassian Document Format (ADF). Captured strings remain ADF text nodes and are never interpreted as document structure. Screenshots remain in the portable report so a trusted backend can decode and upload only the images the reporter retained during review.
 
 ## Trust boundary
 

@@ -1,6 +1,6 @@
-# BugDrop Cloud product boundary
+# Patchmason Cloud product boundary
 
-BugDrop Core is a free, local-first, MIT-licensed capture client. BugDrop Cloud is a separately operated, opt-in service for teams that want to receive reviewed reports and a deliberately limited amount of production debugging context.
+Patchmason Core is a free, local-first, MIT-licensed capture client. Patchmason Cloud is a separately operated, opt-in service for teams that want to receive reviewed reports and a deliberately limited amount of production debugging context.
 
 ## What is sold
 
@@ -21,7 +21,7 @@ Every uploaded context pack must be:
 5. covered by a workspace retention policy and deleted when that policy expires;
 6. access-controlled, auditable, and isolated by workspace.
 
-Credentials, authentication tokens, payment information, request bodies, cookies, unrestricted free text, and arbitrary database records are excluded by default. A correlation ID may let an authorized support system retrieve narrowly scoped data, but BugDrop itself should not become a general-purpose customer-data browser.
+Credentials, authentication tokens, payment information, request bodies, cookies, unrestricted free text, and arbitrary database records are excluded by default. A correlation ID may let an authorized support system retrieve narrowly scoped data, but Patchmason itself should not become a general-purpose customer-data browser.
 
 ## First paid release
 

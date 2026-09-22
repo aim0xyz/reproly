@@ -1,5 +1,5 @@
 {
-  "name": "reproly",
+  "name": "patchmason",
   "version": "0.2.3",
   "private": true,
   "description": "Local-first reproducible bug reports for web apps, iOS simulators and Android emulators.",
@@ -27,15 +27,15 @@
     "node": ">=22"
   },
   "bin": {
-    "reproly": "bin/bugdrop.cjs"
+    "patchmason": "bin/bugdrop.cjs"
   },
   "devDependencies": {
     "electron": "^44.3.0",
     "electron-builder": "^26.0.12"
   },
   "build": {
-    "appId": "xyz.aimo.reproly",
-    "productName": "Reproly",
+    "appId": "xyz.aimo.patchmason",
+    "productName": "Patchmason",
     "asar": true,
     "asarUnpack": [
       "bin/**",

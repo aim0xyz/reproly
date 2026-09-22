@@ -17,7 +17,7 @@ async function discover(){
  try{devices.push(...parseAndroid(await run(adbPath(),['devices','-l'])));}catch{warnings.push('Android unavailable: install Android platform-tools, or set BUGDROP_ADB to adb.');}
  return {devices,warnings};
 }
-function selectDevice(devices,platform,id){const matches=devices.filter(d=>d.platform===platform&&(!id||d.id===id));if(matches.length!==1)throw new Error(matches.length?'Multiple devices are running; specify --device with an exact ID.':'No matching booted simulator/emulator. Run bugdrop devices.');return matches[0];}
+function selectDevice(devices,platform,id){const matches=devices.filter(d=>d.platform===platform&&(!id||d.id===id));if(matches.length!==1)throw new Error(matches.length?'Multiple devices are running; specify --device with an exact ID.':'No matching booted simulator/emulator. Run patchmason devices.');return matches[0];}
 const validProcess=value=>typeof value==='string'&&/^[a-zA-Z0-9_. -]{1,100}$/.test(value);
 const validPackage=value=>typeof value==='string'&&/^[a-zA-Z][\w]*(?:\.[a-zA-Z][\w]*)+$/.test(value);
 const validPid=value=>/^\d{1,10}$/.test(String(value))&&Number(value)>0;

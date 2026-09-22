@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Reproly — Make bugs reproducible",
+  "name": "Patchmason — Make bugs reproducible",
   "version": "0.2.3",
   "description": "Record a bug, review the evidence, and give your coding agent the context. Local, no account.",
   "minimum_chrome_version": "120",
@@ -11,7 +11,12 @@
   ],
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Reproly"
+    "default_title": "Patchmason",
+    "default_icon": {
+      "16": "icons/16.png",
+      "48": "icons/48.png",
+      "128": "icons/128.png"
+    }
   },
   "background": {
     "service_worker": "background.js"

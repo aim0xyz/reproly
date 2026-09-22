@@ -42,7 +42,7 @@ function render() {
     const footer = document.createElement('footer'); const details = document.createElement('div');
     const reason = document.createElement('strong'); reason.textContent = shot.reason || 'Screenshot'; const time = document.createElement('span'); time.className = 'mono'; time.textContent = '+' + ((shot.ms || 0) / 1000).toFixed(1) + 's'; details.append(reason, time);
     const actions = document.createElement('div'); const downloadButton = document.createElement('button'); downloadButton.className = 'download-shot'; downloadButton.textContent = 'Download';
-    downloadButton.onclick = () => { if (!$('reviewed').checked || dirty) return; const a=document.createElement('a'); a.href=shot.data; a.download='bugdrop-screenshot-'+(screenshots.indexOf(shot)+1)+'.jpg'; a.click(); };
+    downloadButton.onclick = () => { if (!$('reviewed').checked || dirty) return; const a=document.createElement('a'); a.href=shot.data; a.download='patchmason-screenshot-'+(screenshots.indexOf(shot)+1)+'.jpg'; a.click(); };
     const removeButton = document.createElement('button'); removeButton.className='danger'; removeButton.textContent='Remove'; removeButton.onclick=()=>safe(async()=>{report=await command('REMOVE_SCREENSHOT',{id:report.id,screenshotId:shot.id});invalidate();render();});
     actions.append(downloadButton,removeButton); footer.append(details,actions); card.append(img,footer); $('image-gallery').append(card);
   }
@@ -63,8 +63,8 @@ for (const id of ['title', 'expected', 'actual']) $(id).addEventListener('input'
 $('reviewed').addEventListener('change', gates);
 $('save').addEventListener('click', () => safe(async () => { await saveIfDirty(); toast('Context saved on this device'); }));
 $('copy').addEventListener('click', () => safe(async () => { if (!$('reviewed').checked || dirty) return; await navigator.clipboard.writeText(BugDropCore.markdown(report)); toast('Copied. Paste into your coding agent.'); }));
-$('markdown').addEventListener('click', () => { if ($('reviewed').checked && !dirty) download(BugDropCore.markdown(report), 'bugdrop-report.md', 'text/markdown'); });
-$('json').addEventListener('click', () => { if ($('reviewed').checked && !dirty) download(JSON.stringify(BugDropCore.portable(report), null, 2), 'bugdrop-report.json', 'application/json'); });
+$('markdown').addEventListener('click', () => { if ($('reviewed').checked && !dirty) download(BugDropCore.markdown(report), 'patchmason-report.md', 'text/markdown'); });
+$('json').addEventListener('click', () => { if ($('reviewed').checked && !dirty) download(JSON.stringify(BugDropCore.portable(report), null, 2), 'patchmason-report.json', 'application/json'); });
 $('delete').addEventListener('click', () => safe(async () => { if (!confirm('Delete this capture and all of its screenshots from this browser?')) return; await command('DELETE', { id: report.id }); report = null; dirty = false; render(); }));
 window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
 // Never allow an older review tab to export a report that another tab changed or deleted.

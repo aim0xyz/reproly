@@ -47,6 +47,14 @@ export class BugDropCloudStack extends Stack {
       pointInTimeRecoverySpecification: { pointInTimeRecoveryEnabled: true },
       removalPolicy: RemovalPolicy.RETAIN
     });
+    const enterpriseLeads = new dynamodb.Table(this, 'EnterpriseLeads', {
+      partitionKey: { name: 'leadId', type: dynamodb.AttributeType.STRING },
+      billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
+      encryption: dynamodb.TableEncryption.AWS_MANAGED,
+      timeToLiveAttribute: 'expiresAt',
+      pointInTimeRecoverySpecification: { pointInTimeRecoveryEnabled: true },
+      removalPolicy: RemovalPolicy.RETAIN
+    });
 
     const evidence = new s3.Bucket(this, 'Evidence', {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
@@ -68,8 +76,8 @@ export class BugDropCloudStack extends Stack {
       removalPolicy: RemovalPolicy.RETAIN
     });
     const dashboardBucket = new s3.Bucket(this, 'Dashboard', { blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL, encryption: s3.BucketEncryption.S3_MANAGED, enforceSSL: true, removalPolicy: RemovalPolicy.RETAIN });
-    const dashboardDomain = 'app.reproly.aimoxyz.xyz';
-    const dashboardCertificate = acm.Certificate.fromCertificateArn(this, 'ReprolyDashboardCertificate', 'arn:aws:acm:us-east-1:112859066975:certificate/b466042b-6f21-4042-b5d3-0623c75fc279');
+    const dashboardDomain = 'app.patchmason.aimoxyz.xyz';
+    const dashboardCertificate = acm.Certificate.fromCertificateArn(this, 'PatchmasonDashboardCertificate', 'arn:aws:acm:us-east-1:112859066975:certificate/7abde068-f951-463b-9f4f-ea2a02a7f19a');
     const dashboard = new cloudfront.Distribution(this, 'DashboardDistribution', {
       domainNames: [dashboardDomain],
       certificate: dashboardCertificate,
@@ -79,8 +87,8 @@ export class BugDropCloudStack extends Stack {
     });
     const dashboardUrl = `https://${dashboardDomain}`;
 
-    const landingDomain = 'reproly.aimoxyz.xyz';
-    const landingCertificate = acm.Certificate.fromCertificateArn(this, 'ReprolyLandingCertificate', 'arn:aws:acm:us-east-1:112859066975:certificate/71b1fe78-efc0-43ce-a1bc-a2816b5adefd');
+    const landingDomain = 'patchmason.aimoxyz.xyz';
+    const landingCertificate = acm.Certificate.fromCertificateArn(this, 'PatchmasonLandingCertificate', 'arn:aws:acm:us-east-1:112859066975:certificate/7abde068-f951-463b-9f4f-ea2a02a7f19a');
     const landingBucket = new s3.Bucket(this, 'Landing', {
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       encryption: s3.BucketEncryption.S3_MANAGED,
@@ -96,15 +104,9 @@ export class BugDropCloudStack extends Stack {
       },
       defaultRootObject: 'index.html'
     });
-    new s3deploy.BucketDeployment(this, 'DeployLanding', {
-      sources: [s3deploy.Source.asset(path.join(__dirname, '../../website'))],
-      destinationBucket: landingBucket,
-      distribution: landing,
-      distributionPaths: ['/*']
-    });
     // Cognito permits exactly one managed hosted-UI domain per user pool. Keep this
     // legacy hostname until the user pool is deliberately migrated in a maintenance
-    // window; the customer-facing dashboard itself is fully on app.reproly.
+    // window; the customer-facing dashboard itself is fully on app.patchmason.
     const cognitoDomain = users.addDomain('DashboardDomain', { cognitoDomain: { domainPrefix: `bugdrop-${this.account}-${this.region}` } });
     const cognitoBaseUrl = cognitoDomain.baseUrl();
     const webClient = users.addClient('DashboardClient', {
@@ -115,12 +117,21 @@ export class BugDropCloudStack extends Stack {
 
     const apiLogs = new logs.LogGroup(this, 'ApiLogs', { retention: logs.RetentionDays.ONE_MONTH, removalPolicy: RemovalPolicy.RETAIN });
     const api = new apigateway.RestApi(this, 'Api', {
-      restApiName: 'Reproly Cloud API',
+      restApiName: 'Patchmason Cloud API',
       deployOptions: { stageName: 'v1', loggingLevel: apigateway.MethodLoggingLevel.ERROR, dataTraceEnabled: false, tracingEnabled: true, accessLogDestination: new apigateway.LogGroupLogDestination(apiLogs), accessLogFormat: apigateway.AccessLogFormat.jsonWithStandardFields() },
       cloudWatchRole: true,
       endpointConfiguration: { types: [apigateway.EndpointType.REGIONAL] }
     });
-    new s3deploy.BucketDeployment(this, 'DeployDashboard', { sources: [s3deploy.Source.asset(path.join(__dirname, '../../dashboard')), s3deploy.Source.data('config.js', `window.REPROLY_CONFIG=${JSON.stringify({ dashboardUrl, apiUrl: api.url, clientId: webClient.userPoolClientId, cognitoDomain: cognitoBaseUrl })};`)], destinationBucket: dashboardBucket, distribution: dashboard, distributionPaths: ['/*'] });
+    new s3deploy.BucketDeployment(this, 'DeployLanding', {
+      sources: [
+        s3deploy.Source.asset(path.join(__dirname, '../../website')),
+        s3deploy.Source.data('contact-config.js', `window.PATCHMASON_CONTACT_CONFIG=${JSON.stringify({ apiUrl: api.url })};`)
+      ],
+      destinationBucket: landingBucket,
+      distribution: landing,
+      distributionPaths: ['/*']
+    });
+    new s3deploy.BucketDeployment(this, 'DeployDashboard', { sources: [s3deploy.Source.asset(path.join(__dirname, '../../dashboard')), s3deploy.Source.data('config.js', `window.PATCHMASON_CONFIG=${JSON.stringify({ dashboardUrl, apiUrl: api.url, clientId: webClient.userPoolClientId, cognitoDomain: cognitoBaseUrl })};`)], destinationBucket: dashboardBucket, distribution: dashboard, distributionPaths: ['/*'] });
 
     const apiFunctionLogs = new logs.LogGroup(this, 'ApiFunctionLogs', { retention: logs.RetentionDays.ONE_MONTH, removalPolicy: RemovalPolicy.RETAIN });
     const apiHandler = new lambda.Function(this, 'ApiHandler', {
@@ -130,11 +141,17 @@ export class BugDropCloudStack extends Stack {
       timeout: Duration.seconds(10),
       memorySize: 256,
       tracing: lambda.Tracing.ACTIVE,
-      environment: { REPORTS_TABLE: reports.tableName, PROJECTS_TABLE: projects.tableName, EVIDENCE_BUCKET: evidence.bucketName },
+      environment: {
+        REPORTS_TABLE: reports.tableName,
+        PROJECTS_TABLE: projects.tableName,
+        EVIDENCE_BUCKET: evidence.bucketName,
+        ENTERPRISE_LEADS_TABLE: enterpriseLeads.tableName
+      },
       logGroup: apiFunctionLogs
     });
     reports.grantReadWriteData(apiHandler);
     projects.grantReadData(apiHandler);
+    enterpriseLeads.grantWriteData(apiHandler);
     evidence.grantReadWrite(apiHandler);
 
     const authorizer = new apigateway.CognitoUserPoolsAuthorizer(this, 'DashboardAuthorizer', { cognitoUserPools: [users] });
@@ -155,6 +172,10 @@ export class BugDropCloudStack extends Stack {
     const intakeReport = api.root.getResource('intake')!.addResource('reports').addResource('{reportId}').addResource('finalize');
     intakeReport.addMethod('POST', new apigateway.LambdaIntegration(apiHandler), { authorizationType: apigateway.AuthorizationType.NONE });
     intakeReport.addMethod('OPTIONS', new apigateway.MockIntegration({ integrationResponses: [{ statusCode: '204', responseParameters: { 'method.response.header.Access-Control-Allow-Origin': "'*'", 'method.response.header.Access-Control-Allow-Methods': "'POST,OPTIONS'", 'method.response.header.Access-Control-Allow-Headers': "'content-type'" } }], requestTemplates: { 'application/json': '{"statusCode": 204}' } }), { methodResponses: [{ statusCode: '204', responseParameters: { 'method.response.header.Access-Control-Allow-Origin': true, 'method.response.header.Access-Control-Allow-Methods': true, 'method.response.header.Access-Control-Allow-Headers': true } }] });
+
+    const contact = api.root.addResource('contact');
+    contact.addMethod('POST', new apigateway.LambdaIntegration(apiHandler), { authorizationType: apigateway.AuthorizationType.NONE });
+    contact.addMethod('OPTIONS', new apigateway.MockIntegration({ integrationResponses: [{ statusCode: '204', responseParameters: { 'method.response.header.Access-Control-Allow-Origin': "'*'", 'method.response.header.Access-Control-Allow-Methods': "'POST,OPTIONS'", 'method.response.header.Access-Control-Allow-Headers': "'content-type'" } }], requestTemplates: { 'application/json': '{"statusCode": 204}' } }), { methodResponses: [{ statusCode: '204', responseParameters: { 'method.response.header.Access-Control-Allow-Origin': true, 'method.response.header.Access-Control-Allow-Methods': true, 'method.response.header.Access-Control-Allow-Headers': true } }] });
 
     const webAcl = new wafv2.CfnWebACL(this, 'ApiWebAcl', {
       scope: 'REGIONAL',

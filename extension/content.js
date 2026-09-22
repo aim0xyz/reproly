@@ -74,7 +74,7 @@ function installContentRecorder(channel) {
     if (!document.getElementById('bugdrop-mask-style')) {
       const style = document.createElement('style'); style.id='bugdrop-mask-style'; style.dataset.bugdropUi=''; style.textContent='[data-bugdrop-mask-hover]{outline:3px solid #e95034!important;outline-offset:2px!important}'; document.documentElement.append(style);
     }
-    maskBanner = document.createElement('div'); maskBanner.dataset.bugdropUi=''; maskBanner.textContent='BugDrop privacy mask: click areas to mask or unmask · Esc when done';
+    maskBanner = document.createElement('div'); maskBanner.dataset.bugdropUi=''; maskBanner.textContent='Patchmason privacy mask: click areas to mask or unmask · Esc when done';
     Object.assign(maskBanner.style,{position:'fixed',top:'14px',left:'50%',transform:'translateX(-50%)',zIndex:'2147483647',padding:'11px 16px',borderRadius:'9px',background:'#242521',color:'#fff',font:'600 13px system-ui',boxShadow:'0 4px 20px #0005'});
     document.documentElement.append(maskBanner);
     document.addEventListener('mouseover',onMaskHover,true); document.addEventListener('click',onMaskClick,true); document.addEventListener('keydown',onMaskKey,true);

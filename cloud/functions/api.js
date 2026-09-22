@@ -19,6 +19,7 @@ exports.handler = async (event) => {
 
   if (method === 'POST' && path === '/intake/sessions') return createIntakeSession(input);
   if (method === 'POST' && path === '/intake/reports/{reportId}/finalize') return finalizeIntakeReport(event.pathParameters.reportId, input);
+  if (method === 'POST' && path === '/contact') return createEnterpriseLead(input);
   const workspaceId = event.requestContext?.authorizer?.claims?.['custom:workspace_id'];
   if (!workspaceId) return json(403, { error: 'workspace_required' });
   if (method === 'GET' && path === '/reports') return listReports(workspaceId);
@@ -35,6 +36,20 @@ async function createIntakeSession(input) {
   const key = `pending/${project.Item.workspaceId}/${project.Item.projectId}/${reportId}/report.json`;
   const uploadUrl = await getSignedUrl(s3, new PutObjectCommand({ Bucket: process.env.EVIDENCE_BUCKET, Key: key, ContentType: 'application/json', ServerSideEncryption: 'AES256' }), { expiresIn: 300 });
   return json(201, { reportId, uploadUrl, expiresInSeconds: 300, maxBytes: 1048576 }, true);
+}
+
+async function createEnterpriseLead(input) {
+  const clean = (value, max) => typeof value === 'string' ? value.trim().replace(/\s+/g, ' ').slice(0, max) : '';
+  if (clean(input.website, 200)) return json(202, { ok: true });
+  const name = clean(input.name, 120);
+  const company = clean(input.company, 160);
+  const email = clean(input.email, 254).toLowerCase();
+  const message = clean(input.message, 3000);
+  const teamSize = clean(input.teamSize, 40);
+  if (!name || !company || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || message.length < 20) return json(400, { error: 'invalid_contact_request' });
+  const leadId = randomUUID();
+  await db.send(new PutCommand({ TableName: process.env.ENTERPRISE_LEADS_TABLE, Item: { leadId, name, company, email, message, teamSize, createdAt: new Date().toISOString(), expiresAt: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 90 } }));
+  return json(202, { ok: true });
 }
 
 async function finalizeIntakeReport(reportId, input) {

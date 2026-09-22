@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Patchmason mark">
+  <path fill="#F1663F" stroke="#17221D" stroke-linejoin="round" stroke-width="26" d="M208 128c0-51 54-92 121-92s121 41 121 92-54 92-121 92c-17 0-34-3-49-8l-82 45 23-72c-8-17-13-36-13-57Z"/>
+  <path fill="#DCF571" stroke="#17221D" stroke-linejoin="round" stroke-width="26" d="M62 275c0-65 65-117 145-117s145 52 145 117-65 117-145 117c-20 0-39-3-56-10l-91 58 26-88c-15-22-24-48-24-77Z"/>
+  <circle cx="151" cy="275" r="13" fill="#17221D"/>
+  <circle cx="207" cy="275" r="13" fill="#17221D"/>
+  <circle cx="263" cy="275" r="13" fill="#17221D"/>
+</svg>

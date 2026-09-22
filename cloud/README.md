@@ -1,4 +1,4 @@
-# BugDrop Cloud
+# Patchmason Cloud
 
 The initial Cloud pilot is an AWS CDK application for `eu-central-1`. It creates a private evidence bucket, encrypted DynamoDB tables, Cognito authentication, a REST API, a Lambda report API, API access logs, X-Ray tracing, and WAF managed/rate-limit rules.
 

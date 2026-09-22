@@ -1,6 +1,6 @@
 # Desktop distribution
 
-BugDrop targets current 64-bit desktop systems:
+Patchmason targets current 64-bit desktop systems:
 
 - macOS 11 or newer as one universal Intel and Apple Silicon DMG.
 - Windows 10 or newer with separate x64 and ARM64 installers.

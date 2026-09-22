@@ -8,4 +8,4 @@ const server = http.createServer((req, res) => {
   if (req.url === '/' || req.url.startsWith('/?')) { res.writeHead(200, { 'Content-Type': 'text/html' }); return res.end(fs.readFileSync(path.join(__dirname, 'index.html'))); }
   res.writeHead(404); res.end('Not found');
 });
-server.listen(Number(process.env.PORT || 4173), '127.0.0.1', () => console.log(`BugDrop demo: http://127.0.0.1:${server.address().port}`));
+server.listen(Number(process.env.PORT || 4173), '127.0.0.1', () => console.log(`Patchmason demo: http://127.0.0.1:${server.address().port}`));

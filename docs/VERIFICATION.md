@@ -1,6 +1,6 @@
 # Verification — 2026-09-08
 
-Scope: current local source, macOS, bundled Playwright/Chromium, iOS 26.5 simulator and Android API 36 emulator. Native tests use the synthetic BugDrop demo apps, not production/customer apps.
+Scope: current local source, macOS, bundled Playwright/Chromium, iOS 26.5 simulator and Android API 36 emulator. Native tests use the synthetic Patchmason demo apps, not production/customer apps.
 
 ## Passed
 

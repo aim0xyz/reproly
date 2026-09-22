@@ -1,4 +1,4 @@
-# Contributing to BugDrop
+# Contributing to Patchmason
 
 Start with a bug you can reproduce. Include browser version, reproduction steps, expected/actual behavior, and a sanitized report if useful. Never attach real credentials, customer information, or private recordings to public issues.
 
@@ -40,13 +40,13 @@ Useful first contributions include minimal reproductions of framework incompatib
 
 ## Desktop controller checks
 
-Run `npm run desktop:web`, then `node tests/desktop-http.cjs` for the local API access checks. Use `npm run desktop` to exercise the packaged-app shell during development. The device integration test requires the synthetic demo app (`xyz.aimo.bugdrop.demo`, sources in `tests/fixtures/native/`) installed and running in the chosen device:
+Run `npm run desktop:web`, then `node tests/desktop-http.cjs` for the local API access checks. Use `npm run desktop` to exercise the packaged-app shell during development. The device integration test requires the synthetic demo app (`xyz.aimo.Patchmason.demo`, sources in `tests/fixtures/native/`) installed and running in the chosen device:
 
 ```sh
 TEST_PLATFORM=ios TEST_DEVICE=YOUR_SIMULATOR_UUID node tests/desktop-e2e.cjs
 TEST_PLATFORM=android TEST_DEVICE=emulator-5554 node tests/desktop-e2e.cjs
 ```
 
-The tests use a disposable Playwright browser and the real simulator APIs. They capture only the synthetic demo app. They do not install the fixtures automatically. Do not point them at a device showing private information. Captures remain in `~/BugDrop Captures/` for inspection.
+The tests use a disposable Playwright browser and the real simulator APIs. They capture only the synthetic demo app. They do not install the fixtures automatically. Do not point them at a device showing private information. Captures remain in `~/Patchmason Captures/` for inspection.
 
 `desktop/server.cjs` serves the loopback-only controller, `mobile/apps.cjs` discovers installed apps, and the CLI communicates recording state via Node IPC. The CLI remains usable without the desktop controller.
